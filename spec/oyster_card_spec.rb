@@ -4,6 +4,7 @@ describe OysterCard do
   it "Oyster card default balance" do
     expect(subject.balance).to eq(0)
   end
+  let(:station) { double :station }
 
   describe "#top_up" do
     it "Top up the card" do
@@ -23,20 +24,27 @@ describe OysterCard do
 
   describe "#touch_in" do
     it "touches in oyster card" do
-      subject.top_up(10)
-      expect(subject.touch_in).to eq true
+      subject.top_up 10
+      subject.touch_in station
+      expect(subject.in_journey?).to eq true
     end
 
     it "raises error when your balance less than £1" do
-      expect { subject.touch_in }.to raise_error "Not enough fund"
+      expect { subject.touch_in(station) }.to raise_error "Not enough fund"
+    end
+
+    it "remembers the entry station" do
+      subject.top_up 10
+      subject.touch_in(station)
+      expect(subject.entry_station).to eq station
     end
   end
 
   describe "#touch_out" do
     it "touches out oyster card" do
-      subject.top_up(10)
-      subject.touch_in
-      expect(subject.touch_out).to eq false
+      subject.top_up 10
+      subject.touch_in(station)
+      expect(subject.touch_out).to eq nil
     end
 
     it "deducts balance by £1 when touch out" do
@@ -48,7 +56,7 @@ describe OysterCard do
 
   it "return true if 'In use'" do
     subject.top_up(10)
-    subject.touch_in
+    subject.touch_in(station)
     expect(subject.in_journey?).to eq true
   end
 
