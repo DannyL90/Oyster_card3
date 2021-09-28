@@ -20,5 +20,10 @@ describe OysterCard do
     expect{ subject.top_up 1 }.to raise_error "The maximum limit of £#{maximum_balance} is reached"
   end
 
+  it "deduct amount from a balance" do
+    subject.top_up(10)
+    expect{ subject.deduct 1 }.to change { subject.balance }.by -1
+  end
+
 
 end
