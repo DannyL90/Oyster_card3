@@ -25,5 +25,18 @@ describe OysterCard do
     expect{ subject.deduct 1 }.to change { subject.balance }.by -1
   end
 
+  it "touches in oyster card" do
+    expect(subject.touch_in).to eq true
+  end
+
+  it "touches out oyster card" do
+    subject.touch_in
+    expect(subject.touch_out).to eq false
+  end
+
+  it "return true if 'In use'" do
+    subject.touch_in
+    expect(subject.in_journey?).to eq true
+  end
 
 end
